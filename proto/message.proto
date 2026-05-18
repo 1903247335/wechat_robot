@@ -1,0 +1,19 @@
+syntax = "proto3";
+
+package MyNetwork;
+
+enum MsgType{
+	UNKNOW=0;
+	SCANQRCODE=1;
+	WAITAUTH=2;
+	LOGINSUCCESS=3;
+	LOGINFAIL=4;
+	AUTHSUCCESS=5;
+	
+}
+message Response {
+    MsgType type = 1;
+    int32 id = 2;
+    bytes data = 3;
+}
+

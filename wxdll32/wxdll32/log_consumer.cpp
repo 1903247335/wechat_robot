@@ -2,7 +2,10 @@
 #include "public.h"
 #include "log_consumer.h"
 #include"event_queue.h"
+#include"event_consumer.h"
+
 #include"state_notice.h"
+
 #include"message.pb.h"
 MyNetwork::Response CreateResponse(MyNetwork::MsgType type, const std::string& data) {
 	MyNetwork::Response msg;
@@ -20,7 +23,6 @@ MyNetwork::Response CreateResponse(MyNetwork::MsgType type, const std::string& d
 }
 
 MyNetwork::Response FromLogCreateResponse(std::wstring_view logMessage) {
-
 	if (logMessage.find(L"getLoginQRcode success") != std::wstring::npos) {
 		Event event = g_EventQueue->Pop(MyNetwork::SCANQRCODE);
 		std::cout << "FromLogCreateResponse: getLoginQRcode success, data size: " << event.data.size() << std::endl;
@@ -39,6 +41,8 @@ MyNetwork::Response FromLogCreateResponse(std::wstring_view logMessage) {
 		return CreateResponse(MyNetwork::AUTHSUCCESS, "");
 	}
 	else if (logMessage.find(L"Login Success") != std::wstring::npos) {
+		g_EventQueue->Clear();
+		g_EventConsumer->Start();
 		return CreateResponse(MyNetwork::LOGINSUCCESS, "");
 	}
 	else {
@@ -49,18 +53,35 @@ MyNetwork::Response FromLogCreateResponse(std::wstring_view logMessage) {
 
 }
 LogConsumer::LogConsumer(LogQueue* queue)
-	
+	: g_queue(queue), g_running(true)
 {
-	g_queue = queue;
-	g_thread =std::thread(&LogConsumer::Consume, this);
+
+	g_thread = std::thread(&LogConsumer::Consume, this);
+}
+
+LogConsumer::~LogConsumer()
+{
+	if (g_queue)
+		g_queue->Stop();
+	if (g_thread.joinable())
+		g_thread.join();
 }
 
 void LogConsumer::Consume()
 {
-	while (true)
-	{
-		const std::wstring msg = g_queue->Pop();
-		MyNetwork::Response response = FromLogCreateResponse(msg);
-		HandleStateNotice(response);
-	}
+	while (g_running) {
+		try {
+			const std::wstring msg = g_queue->Pop();
+			//std::wcout << "Pop Message " << msg << std::endl;
+			MyNetwork::Response response = FromLogCreateResponse(msg);
+			HandleStateNotice(response);
+		
+		
+		}
+		catch (...) {
+		
+		
+		}
+
+		}
 }

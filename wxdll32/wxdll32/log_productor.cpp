@@ -9,8 +9,11 @@ LogProductor::LogProductor(LogQueue* queue)
 
 void LogProductor::Produce(wchar_t* msg)
 {
-	if (!msg || !g_queue) {
-		return;
+	{
+		//std::lock_guard<std::mutex> lock(g_mutex);
+
+		g_queue->Push(std::wstring(msg));
+		//g_queue->Pop();
 	}
-	g_queue->Push(std::wstring(msg));
+
 }

@@ -1,23 +1,25 @@
 #ifndef CPPSERVER_H
 #define CPPSERVER_H
-#include"global.h"
+
 #include <QQmlEngine>
 #include <QTcpServer>
 #include <QTcpSocket>
 #include <QFile>
 #include "message.pb.h"
 #include"logging.h"
+
 #pragma comment(lib, "ws2_32.lib")
 class CppServer: public QObject
 {
     Q_OBJECT
 
+
+
+
 public:
 
-QTcpServer *server;
-public:
-
-
+    QTcpServer *server;
+    QTcpSocket *clientSocket ;
     explicit CppServer(QObject *parent = nullptr);
     Q_INVOKABLE void startListening();
 
@@ -29,12 +31,15 @@ public:
 
     void handleMSG(const  MyNetwork::Response&);
 
+    void send(const MyNetwork::Request&);
+    void storageNotFindID(const int id);
     QTcpSocket *castToQTcpSocket();
 
 public slots:
     void onNewConnection();
     void onReadyRead();
     void onDisconnected();
+
 signals:
     void changeToScanQRcode(QString qrcodeUrl);
     void changeToWaitAuth(QString headUrl);

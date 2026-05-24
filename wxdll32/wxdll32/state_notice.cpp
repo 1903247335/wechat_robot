@@ -11,15 +11,8 @@ bool IsClientInitialized() {
 	return true;
 }
 bool IsNotificationState(const MyNetwork::MsgType& type) {
-	switch (type) {
-	case MyNetwork::SCANQRCODE:
-	case MyNetwork::WAITAUTH:
-	case MyNetwork::LOGINSUCCESS:
-	case MyNetwork::LOGINFAIL:
-		return true;
-	default:
-		return false;
-	}
+	return (type >= MyNetwork::NOTIFICATION_BEGIN && type <= MyNetwork::NOTIFICATION_END);
+
 }
 
 bool ProcessStateNotice(const MyNetwork::Response& msg) {

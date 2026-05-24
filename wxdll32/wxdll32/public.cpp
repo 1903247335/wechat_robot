@@ -1,14 +1,14 @@
 #include "pch.h"
 #include "public.h"
+#include"event_consumer.h"
 #include"event_queue.h"
-#define OPENCONSOLE
-
+#include"message.pb.h"
 
 Client* g_Client = nullptr;
 EventQueue* g_EventQueue = nullptr;
 LogProductor* g_LogProducer=nullptr;
 LogConsumer* g_LogConsumer = nullptr;
-
+EventConsumer* g_EventConsumer = nullptr;
 INT64 GetWXModuleAddress()
 {
     return (INT64)GetModuleHandleA("WeChatWin.dll");
@@ -35,15 +35,8 @@ std::wstring GenerateRandomString(size_t length) {
 }
 
 
-void InitClient() {
-	g_Client = new Client();
-	g_Client->Connect();
-}
 
-void InitQueue() {
-	g_EventQueue = new EventQueue();
 
-}
 
 std::string WStringToString(const wchar_t* wstr)
 {
@@ -77,3 +70,30 @@ std::string WStringToString(const wchar_t* wstr)
     return result;
 }
 
+std::wstring StringToWstring(const std::string& str)
+{
+    if (str.empty())
+        return L"";
+
+    int size_needed = MultiByteToWideChar(
+        CP_UTF8,
+        0,
+        str.c_str(),
+        (int)str.size(),
+        nullptr,
+        0
+    );
+
+    std::wstring wstr(size_needed, 0);
+
+    MultiByteToWideChar(
+        CP_UTF8,
+        0,
+        str.c_str(),
+        (int)str.size(),
+        &wstr[0],
+        size_needed
+    );
+
+    return wstr;
+}

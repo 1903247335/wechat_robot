@@ -1,14 +1,14 @@
 #include "cppserver.h"
+#include"global.h"
 #include <QFile>
 #include <QImage>
 
-#ifdef WX_WITH_PROTOBUF
-#include "message.pb.h"
-#endif
+
 
 CppServer::CppServer(QObject *parent): QObject(parent)
 {
     server = new QTcpServer(this);
+
 }
 
 void CppServer::startListening()
@@ -25,7 +25,7 @@ void CppServer::startListening()
 
 void CppServer::onNewConnection()
 {
-    auto clientSocket = server->nextPendingConnection();
+    clientSocket = server->nextPendingConnection();
     qDebug() << "客户端已连接: " << clientSocket->peerAddress().toString();
 
     connect(clientSocket, &QTcpSocket::readyRead, this, &CppServer::onReadyRead);
@@ -75,9 +75,19 @@ void CppServer::showAuthSuccess(){
     emit changeToAuthSuccess();
 }
 
+void CppServer::storageNotFindID(const int id){
+    auto it=std::find(g_idList.begin(),g_idList.end(),id);
+    if(it==g_idList.end()){
+            g_idList.push_back(id);
 
+    }
+
+
+}
 void CppServer::handleMSG(const  MyNetwork::Response&msg){
     qCDebug(logServer) << "类型"<<msg.type()<<"id"<<msg.id()<<"大小"<<msg.data().size();
+    storageNotFindID(msg.id());
+
     switch (msg.type()) {
     case MyNetwork::SCANQRCODE:
         showQRcode(msg);
@@ -99,17 +109,38 @@ void CppServer::handleMSG(const  MyNetwork::Response&msg){
     }
 
 }
-void CppServer::onReadyRead()
+
+void CppServer::send(const MyNetwork::Request&msg)
 {
-    QTcpSocket *socket=castToQTcpSocket();
-    if (!socket)
+    if (!clientSocket)
         return;
 
-    const QByteArray data = socket->readAll();
+    std::string buffer;
+
+    if (!msg.SerializeToString(&buffer))
+    {
+        qDebug() << "protobuf 序列化失败";
+        return;
+    }
+
+    clientSocket->write(buffer.data(),
+                        static_cast<qint64>(buffer.size()));
+
+    clientSocket->flush();
+
+
+}
+void CppServer::onReadyRead()
+{
+
+    if (!clientSocket)
+        return;
+
+    const QByteArray data = clientSocket->readAll();
 
 
 
-#ifdef WX_WITH_PROTOBUF
+
     MyNetwork::Response msg;
     if (msg.ParseFromArray(data.constData(), int(data.size()))) {
         handleMSG(msg);
@@ -118,7 +149,7 @@ void CppServer::onReadyRead()
     } else {
         qDebug() << "[protobuf] 当前数据不是合法 Response（或需要长度分包后再解析）";
     }
-#endif
+
 
 
 }

@@ -8,11 +8,11 @@ import wx.module.Searcher
 import wx.module.Injector
 import wx.module.Starter
 import wx.module.Server
-
+import wx.module.WxManager
 Window {
     id: root
     property string state: "inject"
-
+    //property string state:"mainPanel"
     width: 640
     height: 480
     visible: true
@@ -34,20 +34,7 @@ Window {
     }
 
 
-    /*Connections{
-        target:Searcher
-        function onPidChanged(newPid) {
 
-                    root.globalPid=newPid
-                        if (newPid > 0) {
-                            statusLabel.text = "微信已运行！PID: " + newPid
-                            statusLabel.color = "green"
-                        } else {
-                            statusLabel.text = "微信未运行，等待中..."
-                            statusLabel.color = "red"
-                        }
-                    }
-    }*/
 
     Connections{
         target:Server
@@ -382,12 +369,26 @@ Window {
                color: "#07C160" // 微信绿：提供安全感与成功的心理暗示
                anchors.horizontalCenter: parent.horizontalCenter
            }
-
+           onOpacityChanged: {
+                       if (opacity === 1.0) {
+                           autoTransitionTimer.start() // 界面完全显现后，开始倒计时
+                       }
+                   }
            Text {
                text: "机器人服务正在运行中..."
                font.pixelSize: 14
                color: "#999999"
                anchors.horizontalCenter: parent.horizontalCenter
+           }
+           Timer{
+            id:autoTransitionTimer
+            interval: 2000 // 2000毫秒 = 2秒。你可以根据需要改成 1500 或 3000
+                        running: false
+                        repeat: false
+                        onTriggered: {
+                            root.state = "mainPanel" // 倒计时结束，无缝切入主控制面板
+                        }
+
            }
        }
 
@@ -505,15 +506,184 @@ Window {
                 anchors.horizontalCenter: parent.horizontalCenter
             }
 
-            // 如果成功后需要一个进入主界面的按钮，可以解开这里的注释
-            /*
-            MyButton {
-                btnText: "进入主页"
+
+        }
+
+    Column {
+            id: mainPanelArea
+            spacing: 20 // 稍微缩小间距，为输入框腾出垂直空间
+            anchors.centerIn: parent
+            width: parent.width * 0.85
+
+            // 状态控制
+            visible: opacity > 0
+            opacity: root.state === "mainPanel" ? 1.0 : 0.0
+            scale: root.state === "mainPanel" ? 1.0 : 0.95
+
+            Behavior on opacity { NumberAnimation { duration: 250; easing.type: Easing.OutCubic } }
+            Behavior on scale { NumberAnimation { duration: 300; easing.type: Easing.OutBack } }
+
+            // 1. 顶部状态页眉
+            Row {
+                spacing: 12
                 anchors.horizontalCenter: parent.horizontalCenter
-                onClicked: {
-                    // 处理进入主页逻辑
+
+                Rectangle {
+                    width: 10; height: 10; radius: 5
+                    color: "#07C160"
+                    anchors.verticalCenter: parent.verticalCenter
+                }
+                Text {
+                    text: "服务已就绪 (进程守护中)"
+                    font.pixelSize: 15
+                    font.bold: true
+                    color: "#07C160"
                 }
             }
-            */
+
+            // ==================== 2. 核心：消息发送测试面板 ====================
+            Rectangle {
+                id: testSendCard
+                width: parent.width
+                implicitHeight: 190
+                radius: 12
+                color: "#F7F7F7" // 浅灰底色
+                anchors.horizontalCenter: parent.horizontalCenter
+
+                Column {
+                    anchors.fill: parent
+                    anchors.margins: 15
+                    spacing: 12
+
+                    Text {
+                        text: "💬 消息发送功能测试"
+                        font.pixelSize: 14
+                        font.bold: true
+                        color: "#333333"
+                    }
+
+                    // 接收人输入框
+                    Row {
+                        width: parent.width
+                        spacing: 10
+                        Text {
+                            text: "接收名字:"; font.pixelSize: 13; color: "#555555"
+                            width: 60; anchors.verticalCenter: parent.verticalCenter
+                        }
+                        TextField {
+                            id: targetNameInput
+                               color:"black"
+                            width: parent.width - 70
+                            placeholderText: "请输入微信备注或群聊名称..."
+                            font.pixelSize: 13
+                            selectByMouse: true
+                            background: Rectangle {
+                                implicitHeight: 32
+                                radius: 6
+                                color: "white"
+                                border.color: parent.activeFocus ? "#07C160" : "#E5E5E5"
+                                border.width: 1
+                            }
+                        }
+                    }
+
+                    // 发送内容输入框
+                    Row {
+                        width: parent.width
+                        spacing: 10
+                        Text {
+                            text: "发送内容:"; font.pixelSize: 13; color: "#555555"
+                            width: 60; anchors.verticalCenter: parent.verticalCenter
+                        }
+                        TextField {
+                            id: messageContentInput
+                            color:"black"
+                            width: parent.width - 70
+                            placeholderText: "请输入测试消息内容..."
+                            font.pixelSize: 13
+                            selectByMouse: true
+                            background: Rectangle {
+                                implicitHeight: 32
+                                radius: 6
+                                color: "white"
+                                border.color: parent.activeFocus ? "#07C160" : "#E5E5E5"
+                                border.width: 1
+                            }
+                        }
+                    }
+
+                    // 发送测试按钮
+                    Button {
+                        text: "发送测试消息"
+                        anchors.right: parent.right // 靠右对齐更符合表单规范
+
+                        contentItem: Text {
+                            text: parent.text
+                            color: "white"
+                            font.bold: true
+                            font.pixelSize: 12
+                            horizontalAlignment: Text.AlignHCenter
+                            verticalAlignment: Text.AlignVCenter
+                        }
+                        background: Rectangle {
+                            implicitWidth: 100
+                            implicitHeight: 32
+                            radius: 6
+                            color: parent.down ? "#06AD56" : "#07C160"
+                        }
+                        onClicked: {
+
+                            // 在这里对接你的 C++ 或后台发送逻辑
+                            console.log("【测试发送】目标:", targetNameInput.text, "内容:", messageContentInput.text)
+  Manager.sendMessage( targetNameInput.text,messageContentInput.text,"1");
+                            // 示例：触发你的底层或调用自定义信号
+                            // root.triggeredTestSend(targetNameInput.text, messageContentInput.text)
+                        }
+                    }
+                }
+            }
+            // =============================================================
+
+            // 3. 底部底座控制栏
+            Row {
+                spacing: 15
+                anchors.horizontalCenter: parent.horizontalCenter
+
+                Button {
+                    text: "停止服务"
+                    contentItem: Text {
+                        text: parent.text
+                        color: "#666666"
+                        font.bold: true
+                        horizontalAlignment: Text.AlignHCenter
+                        verticalAlignment: Text.AlignVCenter
+                    }
+                    background: Rectangle {
+                        implicitWidth: 100; implicitHeight: 36; radius: 18
+                        color: parent.down ? "#E5E5E5" : "#F2F2F2"
+                    }
+                    onClicked: {
+                        root.state = "scanQR"
+                    }
+                }
+
+                Button {
+                    text: "进入后台"
+                    contentItem: Text {
+                        text: parent.text
+                        color: "white"
+                        font.bold: true
+                        horizontalAlignment: Text.AlignHCenter
+                        verticalAlignment: Text.AlignVCenter
+                    }
+                    background: Rectangle {
+                        implicitWidth: 100; implicitHeight: 36; radius: 18
+                        color: parent.down ? "#06AD56" : "#07C160"
+                    }
+                    onClicked: {
+                        console.log("执行进入后台逻辑")
+                    }
+                }
+            }
         }
 }

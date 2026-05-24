@@ -9,6 +9,7 @@ namespace MyNetwork
 }
 struct Event{
 	MyNetwork::MsgType type;
+	int id;
 	std::string data;
 
 
@@ -20,6 +21,8 @@ public:
 
 	void Push(const Event&event);
 	Event Pop(const MyNetwork::MsgType);
+	Event Pop();
+
 	void Clear();
 
 

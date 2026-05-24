@@ -56,27 +56,44 @@ extern const ::google::protobuf::internal::DescriptorTable descriptor_table_mess
 namespace MyNetwork {
 enum MsgType : int;
 extern const uint32_t MsgType_internal_data_[];
+enum SendMsgType : int;
+extern const uint32_t SendMsgType_internal_data_[];
+class Request;
+struct RequestDefaultTypeInternal;
+extern RequestDefaultTypeInternal _Request_default_instance_;
+extern const ::google::protobuf::internal::ClassDataFull Request_class_data_;
 class Response;
 struct ResponseDefaultTypeInternal;
 extern ResponseDefaultTypeInternal _Response_default_instance_;
 extern const ::google::protobuf::internal::ClassDataFull Response_class_data_;
+class SendMessageRequest;
+struct SendMessageRequestDefaultTypeInternal;
+extern SendMessageRequestDefaultTypeInternal _SendMessageRequest_default_instance_;
+extern const ::google::protobuf::internal::ClassDataFull SendMessageRequest_class_data_;
 }  // namespace MyNetwork
 namespace google {
 namespace protobuf {
 template <>
 internal::EnumTraitsT<::MyNetwork::MsgType_internal_data_>
     internal::EnumTraitsImpl::value<::MyNetwork::MsgType>;
+template <>
+internal::EnumTraitsT<::MyNetwork::SendMsgType_internal_data_>
+    internal::EnumTraitsImpl::value<::MyNetwork::SendMsgType>;
 }  // namespace protobuf
 }  // namespace google
 
 namespace MyNetwork {
 enum MsgType : int {
   UNKNOW = 0,
-  SCANQRCODE = 1,
-  WAITAUTH = 2,
-  LOGINSUCCESS = 3,
-  LOGINFAIL = 4,
-  AUTHSUCCESS = 5,
+  NOTIFICATION_BEGIN = 1,
+  SCANQRCODE = 2,
+  WAITAUTH = 3,
+  LOGINSUCCESS = 4,
+  LOGINFAIL = 5,
+  AUTHSUCCESS = 6,
+  SENDMESSAGE = 101,
+  RECIVEMESSAGE = 102,
+  NOTIFICATION_END = 999,
   MsgType_INT_MIN_SENTINEL_DO_NOT_USE_ =
       ::std::numeric_limits<::int32_t>::min(),
   MsgType_INT_MAX_SENTINEL_DO_NOT_USE_ =
@@ -87,33 +104,288 @@ extern const uint32_t MsgType_internal_data_[];
 inline constexpr MsgType MsgType_MIN =
     static_cast<MsgType>(0);
 inline constexpr MsgType MsgType_MAX =
-    static_cast<MsgType>(5);
+    static_cast<MsgType>(999);
 inline bool MsgType_IsValid(int value) {
-  return 0 <= value && value <= 5;
+  return ::google::protobuf::internal::ValidateEnum(value, MsgType_internal_data_);
 }
-inline constexpr int MsgType_ARRAYSIZE = 5 + 1;
+inline constexpr int MsgType_ARRAYSIZE = 999 + 1;
 const ::google::protobuf::EnumDescriptor* PROTOBUF_NONNULL MsgType_descriptor();
 template <typename T>
 const ::std::string& MsgType_Name(T value) {
   static_assert(::std::is_same<T, MsgType>::value ||
                     ::std::is_integral<T>::value,
                 "Incorrect type passed to MsgType_Name().");
-  return MsgType_Name(static_cast<MsgType>(value));
-}
-template <>
-inline const ::std::string& MsgType_Name(MsgType value) {
-  return ::google::protobuf::internal::NameOfDenseEnum<MsgType_descriptor, 0, 5>(
-      static_cast<int>(value));
+  return ::google::protobuf::internal::NameOfEnum(MsgType_descriptor(), value);
 }
 inline bool MsgType_Parse(
     ::absl::string_view name, MsgType* PROTOBUF_NONNULL value) {
   return ::google::protobuf::internal::ParseNamedEnum<MsgType>(MsgType_descriptor(), name,
                                            value);
 }
+enum SendMsgType : int {
+  UNKNOWN = 0,
+  TEXT = 1,
+  SendMsgType_INT_MIN_SENTINEL_DO_NOT_USE_ =
+      ::std::numeric_limits<::int32_t>::min(),
+  SendMsgType_INT_MAX_SENTINEL_DO_NOT_USE_ =
+      ::std::numeric_limits<::int32_t>::max(),
+};
+
+extern const uint32_t SendMsgType_internal_data_[];
+inline constexpr SendMsgType SendMsgType_MIN =
+    static_cast<SendMsgType>(0);
+inline constexpr SendMsgType SendMsgType_MAX =
+    static_cast<SendMsgType>(1);
+inline bool SendMsgType_IsValid(int value) {
+  return 0 <= value && value <= 1;
+}
+inline constexpr int SendMsgType_ARRAYSIZE = 1 + 1;
+const ::google::protobuf::EnumDescriptor* PROTOBUF_NONNULL SendMsgType_descriptor();
+template <typename T>
+const ::std::string& SendMsgType_Name(T value) {
+  static_assert(::std::is_same<T, SendMsgType>::value ||
+                    ::std::is_integral<T>::value,
+                "Incorrect type passed to SendMsgType_Name().");
+  return SendMsgType_Name(static_cast<SendMsgType>(value));
+}
+template <>
+inline const ::std::string& SendMsgType_Name(SendMsgType value) {
+  return ::google::protobuf::internal::NameOfDenseEnum<SendMsgType_descriptor, 0, 1>(
+      static_cast<int>(value));
+}
+inline bool SendMsgType_Parse(
+    ::absl::string_view name, SendMsgType* PROTOBUF_NONNULL value) {
+  return ::google::protobuf::internal::ParseNamedEnum<SendMsgType>(SendMsgType_descriptor(), name,
+                                           value);
+}
 
 // ===================================================================
 
 
+// -------------------------------------------------------------------
+
+class SendMessageRequest final : public ::google::protobuf::Message
+/* @@protoc_insertion_point(class_definition:MyNetwork.SendMessageRequest) */ {
+ public:
+  inline SendMessageRequest() : SendMessageRequest(nullptr) {}
+  ~SendMessageRequest() PROTOBUF_FINAL;
+
+#if defined(PROTOBUF_CUSTOM_VTABLE)
+  void operator delete(SendMessageRequest* PROTOBUF_NONNULL msg, ::std::destroying_delete_t) {
+    SharedDtor(*msg);
+    ::google::protobuf::internal::SizedDelete(msg, sizeof(SendMessageRequest));
+  }
+#endif
+
+  template <typename = void>
+  explicit PROTOBUF_CONSTEXPR SendMessageRequest(::google::protobuf::internal::ConstantInitialized);
+
+  inline SendMessageRequest(const SendMessageRequest& from) : SendMessageRequest(nullptr, from) {}
+  inline SendMessageRequest(SendMessageRequest&& from) noexcept
+      : SendMessageRequest(nullptr, ::std::move(from)) {}
+  inline SendMessageRequest& operator=(const SendMessageRequest& from) {
+    CopyFrom(from);
+    return *this;
+  }
+  inline SendMessageRequest& operator=(SendMessageRequest&& from) noexcept {
+    if (this == &from) return *this;
+    if (::google::protobuf::internal::CanMoveWithInternalSwap(GetArena(), from.GetArena())) {
+      InternalSwap(&from);
+    } else {
+      CopyFrom(from);
+    }
+    return *this;
+  }
+
+  inline const ::google::protobuf::UnknownFieldSet& unknown_fields() const
+      ABSL_ATTRIBUTE_LIFETIME_BOUND {
+    return _internal_metadata_.unknown_fields<::google::protobuf::UnknownFieldSet>(::google::protobuf::UnknownFieldSet::default_instance);
+  }
+  inline ::google::protobuf::UnknownFieldSet* PROTOBUF_NONNULL mutable_unknown_fields()
+      ABSL_ATTRIBUTE_LIFETIME_BOUND {
+    return _internal_metadata_.mutable_unknown_fields<::google::protobuf::UnknownFieldSet>();
+  }
+
+  static const ::google::protobuf::Descriptor* PROTOBUF_NONNULL descriptor() {
+    return GetDescriptor();
+  }
+  static const ::google::protobuf::Descriptor* PROTOBUF_NONNULL GetDescriptor() {
+    return default_instance().GetMetadata().descriptor;
+  }
+  static const ::google::protobuf::Reflection* PROTOBUF_NONNULL GetReflection() {
+    return default_instance().GetMetadata().reflection;
+  }
+  static const SendMessageRequest& default_instance() {
+    return *reinterpret_cast<const SendMessageRequest*>(
+        &_SendMessageRequest_default_instance_);
+  }
+  static constexpr int kIndexInFileMessages = 2;
+  friend void swap(SendMessageRequest& a, SendMessageRequest& b) { a.Swap(&b); }
+  inline void Swap(SendMessageRequest* PROTOBUF_NONNULL other) {
+    if (other == this) return;
+    if (::google::protobuf::internal::CanUseInternalSwap(GetArena(), other->GetArena())) {
+      InternalSwap(other);
+    } else {
+      ::google::protobuf::internal::GenericSwap(this, other);
+    }
+  }
+  void UnsafeArenaSwap(SendMessageRequest* PROTOBUF_NONNULL other) {
+    if (other == this) return;
+    ABSL_DCHECK(GetArena() == other->GetArena());
+    InternalSwap(other);
+  }
+
+  // implements Message ----------------------------------------------
+
+  SendMessageRequest* PROTOBUF_NONNULL New(::google::protobuf::Arena* PROTOBUF_NULLABLE arena = nullptr) const {
+    return ::google::protobuf::Message::DefaultConstruct<SendMessageRequest>(arena);
+  }
+  using ::google::protobuf::Message::CopyFrom;
+  void CopyFrom(const SendMessageRequest& from);
+  using ::google::protobuf::Message::MergeFrom;
+  void MergeFrom(const SendMessageRequest& from) { SendMessageRequest::MergeImpl(*this, from); }
+
+  private:
+  static void MergeImpl(::google::protobuf::MessageLite& to_msg,
+                        const ::google::protobuf::MessageLite& from_msg);
+
+  public:
+  bool IsInitialized() const {
+    return true;
+  }
+  ABSL_ATTRIBUTE_REINITIALIZES void Clear() PROTOBUF_FINAL;
+  #if defined(PROTOBUF_CUSTOM_VTABLE)
+  private:
+  static ::size_t ByteSizeLong(const ::google::protobuf::MessageLite& msg);
+  static ::uint8_t* PROTOBUF_NONNULL _InternalSerialize(
+      const ::google::protobuf::MessageLite& msg, ::uint8_t* PROTOBUF_NONNULL target,
+      ::google::protobuf::io::EpsCopyOutputStream* PROTOBUF_NONNULL stream);
+
+  public:
+  ::size_t ByteSizeLong() const { return ByteSizeLong(*this); }
+  ::uint8_t* PROTOBUF_NONNULL _InternalSerialize(
+      ::uint8_t* PROTOBUF_NONNULL target,
+      ::google::protobuf::io::EpsCopyOutputStream* PROTOBUF_NONNULL stream) const {
+    return _InternalSerialize(*this, target, stream);
+  }
+  #else   // PROTOBUF_CUSTOM_VTABLE
+  ::size_t ByteSizeLong() const final;
+  ::uint8_t* PROTOBUF_NONNULL _InternalSerialize(
+      ::uint8_t* PROTOBUF_NONNULL target,
+      ::google::protobuf::io::EpsCopyOutputStream* PROTOBUF_NONNULL stream) const final;
+  #endif  // PROTOBUF_CUSTOM_VTABLE
+  int GetCachedSize() const { return _impl_._cached_size_.Get(); }
+
+  private:
+  void SharedCtor(::google::protobuf::Arena* PROTOBUF_NULLABLE arena);
+  static void SharedDtor(MessageLite& self);
+  void InternalSwap(SendMessageRequest* PROTOBUF_NONNULL other);
+ private:
+  template <typename T>
+  friend ::absl::string_view(::google::protobuf::internal::GetAnyMessageName)();
+  static ::absl::string_view FullMessageName() { return "MyNetwork.SendMessageRequest"; }
+
+  explicit SendMessageRequest(::google::protobuf::Arena* PROTOBUF_NULLABLE arena);
+  SendMessageRequest(::google::protobuf::Arena* PROTOBUF_NULLABLE arena, const SendMessageRequest& from);
+  SendMessageRequest(
+      ::google::protobuf::Arena* PROTOBUF_NULLABLE arena, SendMessageRequest&& from) noexcept
+      : SendMessageRequest(arena) {
+    *this = ::std::move(from);
+  }
+  const ::google::protobuf::internal::ClassData* PROTOBUF_NONNULL GetClassData() const PROTOBUF_FINAL;
+  static void* PROTOBUF_NONNULL PlacementNew_(
+      const void* PROTOBUF_NONNULL, void* PROTOBUF_NONNULL mem,
+      ::google::protobuf::Arena* PROTOBUF_NULLABLE arena);
+  static constexpr auto InternalNewImpl_();
+
+ public:
+  static constexpr auto InternalGenerateClassData_();
+
+  ::google::protobuf::Metadata GetMetadata() const;
+  // nested types ----------------------------------------------------
+
+  // accessors -------------------------------------------------------
+  enum : int {
+    kWxidFieldNumber = 1,
+    kContentFieldNumber = 2,
+    kMsgTypeFieldNumber = 3,
+  };
+  // string wxid = 1;
+  void clear_wxid() ;
+  const ::std::string& wxid() const;
+  template <typename Arg_ = const ::std::string&, typename... Args_>
+  void set_wxid(Arg_&& arg, Args_... args);
+  ::std::string* PROTOBUF_NONNULL mutable_wxid();
+  [[nodiscard]] ::std::string* PROTOBUF_NULLABLE release_wxid();
+  void set_allocated_wxid(::std::string* PROTOBUF_NULLABLE value);
+
+  private:
+  const ::std::string& _internal_wxid() const;
+  PROTOBUF_ALWAYS_INLINE void _internal_set_wxid(const ::std::string& value);
+  ::std::string* PROTOBUF_NONNULL _internal_mutable_wxid();
+
+  public:
+  // string content = 2;
+  void clear_content() ;
+  const ::std::string& content() const;
+  template <typename Arg_ = const ::std::string&, typename... Args_>
+  void set_content(Arg_&& arg, Args_... args);
+  ::std::string* PROTOBUF_NONNULL mutable_content();
+  [[nodiscard]] ::std::string* PROTOBUF_NULLABLE release_content();
+  void set_allocated_content(::std::string* PROTOBUF_NULLABLE value);
+
+  private:
+  const ::std::string& _internal_content() const;
+  PROTOBUF_ALWAYS_INLINE void _internal_set_content(const ::std::string& value);
+  ::std::string* PROTOBUF_NONNULL _internal_mutable_content();
+
+  public:
+  // .MyNetwork.SendMsgType msg_type = 3;
+  void clear_msg_type() ;
+  ::MyNetwork::SendMsgType msg_type() const;
+  void set_msg_type(::MyNetwork::SendMsgType value);
+
+  private:
+  ::MyNetwork::SendMsgType _internal_msg_type() const;
+  void _internal_set_msg_type(::MyNetwork::SendMsgType value);
+
+  public:
+  // @@protoc_insertion_point(class_scope:MyNetwork.SendMessageRequest)
+ private:
+  class _Internal;
+  friend class ::google::protobuf::internal::TcParser;
+  static const ::google::protobuf::internal::TcParseTable<2, 3,
+                                   0, 48,
+                                   2>
+      _table_;
+
+  friend class ::google::protobuf::MessageLite;
+  friend class ::google::protobuf::Arena;
+  template <typename T>
+  friend class ::google::protobuf::Arena::InternalHelper;
+  using InternalArenaConstructable_ = void;
+  using DestructorSkippable_ = void;
+  struct Impl_ {
+    inline explicit constexpr Impl_(::google::protobuf::internal::ConstantInitialized) noexcept;
+    inline explicit Impl_(
+        ::google::protobuf::internal::InternalVisibility visibility,
+        ::google::protobuf::Arena* PROTOBUF_NULLABLE arena);
+    inline explicit Impl_(
+        ::google::protobuf::internal::InternalVisibility visibility,
+        ::google::protobuf::Arena* PROTOBUF_NULLABLE arena, const Impl_& from,
+        const SendMessageRequest& from_msg);
+    ::google::protobuf::internal::HasBits<1> _has_bits_;
+    ::google::protobuf::internal::CachedSize _cached_size_;
+    ::google::protobuf::internal::ArenaStringPtr wxid_;
+    ::google::protobuf::internal::ArenaStringPtr content_;
+    int msg_type_;
+    PROTOBUF_TSAN_DECLARE_MEMBER
+  };
+  union { Impl_ _impl_; };
+  friend struct ::TableStruct_message_2eproto;
+};
+
+extern const ::google::protobuf::internal::ClassDataFull SendMessageRequest_class_data_;
 // -------------------------------------------------------------------
 
 class Response final : public ::google::protobuf::Message
@@ -333,6 +605,225 @@ class Response final : public ::google::protobuf::Message
 };
 
 extern const ::google::protobuf::internal::ClassDataFull Response_class_data_;
+// -------------------------------------------------------------------
+
+class Request final : public ::google::protobuf::Message
+/* @@protoc_insertion_point(class_definition:MyNetwork.Request) */ {
+ public:
+  inline Request() : Request(nullptr) {}
+  ~Request() PROTOBUF_FINAL;
+
+#if defined(PROTOBUF_CUSTOM_VTABLE)
+  void operator delete(Request* PROTOBUF_NONNULL msg, ::std::destroying_delete_t) {
+    SharedDtor(*msg);
+    ::google::protobuf::internal::SizedDelete(msg, sizeof(Request));
+  }
+#endif
+
+  template <typename = void>
+  explicit PROTOBUF_CONSTEXPR Request(::google::protobuf::internal::ConstantInitialized);
+
+  inline Request(const Request& from) : Request(nullptr, from) {}
+  inline Request(Request&& from) noexcept
+      : Request(nullptr, ::std::move(from)) {}
+  inline Request& operator=(const Request& from) {
+    CopyFrom(from);
+    return *this;
+  }
+  inline Request& operator=(Request&& from) noexcept {
+    if (this == &from) return *this;
+    if (::google::protobuf::internal::CanMoveWithInternalSwap(GetArena(), from.GetArena())) {
+      InternalSwap(&from);
+    } else {
+      CopyFrom(from);
+    }
+    return *this;
+  }
+
+  inline const ::google::protobuf::UnknownFieldSet& unknown_fields() const
+      ABSL_ATTRIBUTE_LIFETIME_BOUND {
+    return _internal_metadata_.unknown_fields<::google::protobuf::UnknownFieldSet>(::google::protobuf::UnknownFieldSet::default_instance);
+  }
+  inline ::google::protobuf::UnknownFieldSet* PROTOBUF_NONNULL mutable_unknown_fields()
+      ABSL_ATTRIBUTE_LIFETIME_BOUND {
+    return _internal_metadata_.mutable_unknown_fields<::google::protobuf::UnknownFieldSet>();
+  }
+
+  static const ::google::protobuf::Descriptor* PROTOBUF_NONNULL descriptor() {
+    return GetDescriptor();
+  }
+  static const ::google::protobuf::Descriptor* PROTOBUF_NONNULL GetDescriptor() {
+    return default_instance().GetMetadata().descriptor;
+  }
+  static const ::google::protobuf::Reflection* PROTOBUF_NONNULL GetReflection() {
+    return default_instance().GetMetadata().reflection;
+  }
+  static const Request& default_instance() {
+    return *reinterpret_cast<const Request*>(
+        &_Request_default_instance_);
+  }
+  static constexpr int kIndexInFileMessages = 1;
+  friend void swap(Request& a, Request& b) { a.Swap(&b); }
+  inline void Swap(Request* PROTOBUF_NONNULL other) {
+    if (other == this) return;
+    if (::google::protobuf::internal::CanUseInternalSwap(GetArena(), other->GetArena())) {
+      InternalSwap(other);
+    } else {
+      ::google::protobuf::internal::GenericSwap(this, other);
+    }
+  }
+  void UnsafeArenaSwap(Request* PROTOBUF_NONNULL other) {
+    if (other == this) return;
+    ABSL_DCHECK(GetArena() == other->GetArena());
+    InternalSwap(other);
+  }
+
+  // implements Message ----------------------------------------------
+
+  Request* PROTOBUF_NONNULL New(::google::protobuf::Arena* PROTOBUF_NULLABLE arena = nullptr) const {
+    return ::google::protobuf::Message::DefaultConstruct<Request>(arena);
+  }
+  using ::google::protobuf::Message::CopyFrom;
+  void CopyFrom(const Request& from);
+  using ::google::protobuf::Message::MergeFrom;
+  void MergeFrom(const Request& from) { Request::MergeImpl(*this, from); }
+
+  private:
+  static void MergeImpl(::google::protobuf::MessageLite& to_msg,
+                        const ::google::protobuf::MessageLite& from_msg);
+
+  public:
+  bool IsInitialized() const {
+    return true;
+  }
+  ABSL_ATTRIBUTE_REINITIALIZES void Clear() PROTOBUF_FINAL;
+  #if defined(PROTOBUF_CUSTOM_VTABLE)
+  private:
+  static ::size_t ByteSizeLong(const ::google::protobuf::MessageLite& msg);
+  static ::uint8_t* PROTOBUF_NONNULL _InternalSerialize(
+      const ::google::protobuf::MessageLite& msg, ::uint8_t* PROTOBUF_NONNULL target,
+      ::google::protobuf::io::EpsCopyOutputStream* PROTOBUF_NONNULL stream);
+
+  public:
+  ::size_t ByteSizeLong() const { return ByteSizeLong(*this); }
+  ::uint8_t* PROTOBUF_NONNULL _InternalSerialize(
+      ::uint8_t* PROTOBUF_NONNULL target,
+      ::google::protobuf::io::EpsCopyOutputStream* PROTOBUF_NONNULL stream) const {
+    return _InternalSerialize(*this, target, stream);
+  }
+  #else   // PROTOBUF_CUSTOM_VTABLE
+  ::size_t ByteSizeLong() const final;
+  ::uint8_t* PROTOBUF_NONNULL _InternalSerialize(
+      ::uint8_t* PROTOBUF_NONNULL target,
+      ::google::protobuf::io::EpsCopyOutputStream* PROTOBUF_NONNULL stream) const final;
+  #endif  // PROTOBUF_CUSTOM_VTABLE
+  int GetCachedSize() const { return _impl_._cached_size_.Get(); }
+
+  private:
+  void SharedCtor(::google::protobuf::Arena* PROTOBUF_NULLABLE arena);
+  static void SharedDtor(MessageLite& self);
+  void InternalSwap(Request* PROTOBUF_NONNULL other);
+ private:
+  template <typename T>
+  friend ::absl::string_view(::google::protobuf::internal::GetAnyMessageName)();
+  static ::absl::string_view FullMessageName() { return "MyNetwork.Request"; }
+
+  explicit Request(::google::protobuf::Arena* PROTOBUF_NULLABLE arena);
+  Request(::google::protobuf::Arena* PROTOBUF_NULLABLE arena, const Request& from);
+  Request(
+      ::google::protobuf::Arena* PROTOBUF_NULLABLE arena, Request&& from) noexcept
+      : Request(arena) {
+    *this = ::std::move(from);
+  }
+  const ::google::protobuf::internal::ClassData* PROTOBUF_NONNULL GetClassData() const PROTOBUF_FINAL;
+  static void* PROTOBUF_NONNULL PlacementNew_(
+      const void* PROTOBUF_NONNULL, void* PROTOBUF_NONNULL mem,
+      ::google::protobuf::Arena* PROTOBUF_NULLABLE arena);
+  static constexpr auto InternalNewImpl_();
+
+ public:
+  static constexpr auto InternalGenerateClassData_();
+
+  ::google::protobuf::Metadata GetMetadata() const;
+  // nested types ----------------------------------------------------
+
+  // accessors -------------------------------------------------------
+  enum : int {
+    kDataFieldNumber = 3,
+    kTypeFieldNumber = 1,
+    kIdFieldNumber = 2,
+  };
+  // bytes data = 3;
+  void clear_data() ;
+  const ::std::string& data() const;
+  template <typename Arg_ = const ::std::string&, typename... Args_>
+  void set_data(Arg_&& arg, Args_... args);
+  ::std::string* PROTOBUF_NONNULL mutable_data();
+  [[nodiscard]] ::std::string* PROTOBUF_NULLABLE release_data();
+  void set_allocated_data(::std::string* PROTOBUF_NULLABLE value);
+
+  private:
+  const ::std::string& _internal_data() const;
+  PROTOBUF_ALWAYS_INLINE void _internal_set_data(const ::std::string& value);
+  ::std::string* PROTOBUF_NONNULL _internal_mutable_data();
+
+  public:
+  // .MyNetwork.MsgType type = 1;
+  void clear_type() ;
+  ::MyNetwork::MsgType type() const;
+  void set_type(::MyNetwork::MsgType value);
+
+  private:
+  ::MyNetwork::MsgType _internal_type() const;
+  void _internal_set_type(::MyNetwork::MsgType value);
+
+  public:
+  // int32 id = 2;
+  void clear_id() ;
+  ::int32_t id() const;
+  void set_id(::int32_t value);
+
+  private:
+  ::int32_t _internal_id() const;
+  void _internal_set_id(::int32_t value);
+
+  public:
+  // @@protoc_insertion_point(class_scope:MyNetwork.Request)
+ private:
+  class _Internal;
+  friend class ::google::protobuf::internal::TcParser;
+  static const ::google::protobuf::internal::TcParseTable<2, 3,
+                                   0, 0,
+                                   2>
+      _table_;
+
+  friend class ::google::protobuf::MessageLite;
+  friend class ::google::protobuf::Arena;
+  template <typename T>
+  friend class ::google::protobuf::Arena::InternalHelper;
+  using InternalArenaConstructable_ = void;
+  using DestructorSkippable_ = void;
+  struct Impl_ {
+    inline explicit constexpr Impl_(::google::protobuf::internal::ConstantInitialized) noexcept;
+    inline explicit Impl_(
+        ::google::protobuf::internal::InternalVisibility visibility,
+        ::google::protobuf::Arena* PROTOBUF_NULLABLE arena);
+    inline explicit Impl_(
+        ::google::protobuf::internal::InternalVisibility visibility,
+        ::google::protobuf::Arena* PROTOBUF_NULLABLE arena, const Impl_& from,
+        const Request& from_msg);
+    ::google::protobuf::internal::HasBits<1> _has_bits_;
+    ::google::protobuf::internal::CachedSize _cached_size_;
+    ::google::protobuf::internal::ArenaStringPtr data_;
+    int type_;
+    ::int32_t id_;
+    PROTOBUF_TSAN_DECLARE_MEMBER
+  };
+  union { Impl_ _impl_; };
+  friend struct ::TableStruct_message_2eproto;
+};
+
+extern const ::google::protobuf::internal::ClassDataFull Request_class_data_;
 
 // ===================================================================
 
@@ -465,6 +956,284 @@ inline void Response::set_allocated_data(::std::string* PROTOBUF_NULLABLE value)
   // @@protoc_insertion_point(field_set_allocated:MyNetwork.Response.data)
 }
 
+// -------------------------------------------------------------------
+
+// Request
+
+// .MyNetwork.MsgType type = 1;
+inline void Request::clear_type() {
+  ::google::protobuf::internal::TSanWrite(&_impl_);
+  _impl_.type_ = 0;
+  ClearHasBit(_impl_._has_bits_[0],
+                  0x00000002U);
+}
+inline ::MyNetwork::MsgType Request::type() const {
+  // @@protoc_insertion_point(field_get:MyNetwork.Request.type)
+  return _internal_type();
+}
+inline void Request::set_type(::MyNetwork::MsgType value) {
+  _internal_set_type(value);
+  SetHasBit(_impl_._has_bits_[0], 0x00000002U);
+  // @@protoc_insertion_point(field_set:MyNetwork.Request.type)
+}
+inline ::MyNetwork::MsgType Request::_internal_type() const {
+  ::google::protobuf::internal::TSanRead(&_impl_);
+  return static_cast<::MyNetwork::MsgType>(_impl_.type_);
+}
+inline void Request::_internal_set_type(::MyNetwork::MsgType value) {
+  ::google::protobuf::internal::TSanWrite(&_impl_);
+  _impl_.type_ = value;
+}
+
+// int32 id = 2;
+inline void Request::clear_id() {
+  ::google::protobuf::internal::TSanWrite(&_impl_);
+  _impl_.id_ = 0;
+  ClearHasBit(_impl_._has_bits_[0],
+                  0x00000004U);
+}
+inline ::int32_t Request::id() const {
+  // @@protoc_insertion_point(field_get:MyNetwork.Request.id)
+  return _internal_id();
+}
+inline void Request::set_id(::int32_t value) {
+  _internal_set_id(value);
+  SetHasBit(_impl_._has_bits_[0], 0x00000004U);
+  // @@protoc_insertion_point(field_set:MyNetwork.Request.id)
+}
+inline ::int32_t Request::_internal_id() const {
+  ::google::protobuf::internal::TSanRead(&_impl_);
+  return _impl_.id_;
+}
+inline void Request::_internal_set_id(::int32_t value) {
+  ::google::protobuf::internal::TSanWrite(&_impl_);
+  _impl_.id_ = value;
+}
+
+// bytes data = 3;
+inline void Request::clear_data() {
+  ::google::protobuf::internal::TSanWrite(&_impl_);
+  _impl_.data_.ClearToEmpty();
+  ClearHasBit(_impl_._has_bits_[0],
+                  0x00000001U);
+}
+inline const ::std::string& Request::data() const
+    ABSL_ATTRIBUTE_LIFETIME_BOUND {
+  // @@protoc_insertion_point(field_get:MyNetwork.Request.data)
+  return _internal_data();
+}
+template <typename Arg_, typename... Args_>
+PROTOBUF_ALWAYS_INLINE void Request::set_data(Arg_&& arg, Args_... args) {
+  ::google::protobuf::internal::TSanWrite(&_impl_);
+  SetHasBit(_impl_._has_bits_[0], 0x00000001U);
+  _impl_.data_.SetBytes(static_cast<Arg_&&>(arg), args..., GetArena());
+  // @@protoc_insertion_point(field_set:MyNetwork.Request.data)
+}
+inline ::std::string* PROTOBUF_NONNULL Request::mutable_data()
+    ABSL_ATTRIBUTE_LIFETIME_BOUND {
+  SetHasBit(_impl_._has_bits_[0], 0x00000001U);
+  ::std::string* _s = _internal_mutable_data();
+  // @@protoc_insertion_point(field_mutable:MyNetwork.Request.data)
+  return _s;
+}
+inline const ::std::string& Request::_internal_data() const {
+  ::google::protobuf::internal::TSanRead(&_impl_);
+  return _impl_.data_.Get();
+}
+inline void Request::_internal_set_data(const ::std::string& value) {
+  ::google::protobuf::internal::TSanWrite(&_impl_);
+  _impl_.data_.Set(value, GetArena());
+}
+inline ::std::string* PROTOBUF_NONNULL Request::_internal_mutable_data() {
+  ::google::protobuf::internal::TSanWrite(&_impl_);
+  return _impl_.data_.Mutable( GetArena());
+}
+inline ::std::string* PROTOBUF_NULLABLE Request::release_data() {
+  ::google::protobuf::internal::TSanWrite(&_impl_);
+  // @@protoc_insertion_point(field_release:MyNetwork.Request.data)
+  if (!CheckHasBit(_impl_._has_bits_[0], 0x00000001U)) {
+    return nullptr;
+  }
+  ClearHasBit(_impl_._has_bits_[0], 0x00000001U);
+  auto* released = _impl_.data_.Release();
+  if (::google::protobuf::internal::DebugHardenForceCopyDefaultString()) {
+    _impl_.data_.Set("", GetArena());
+  }
+  return released;
+}
+inline void Request::set_allocated_data(::std::string* PROTOBUF_NULLABLE value) {
+  ::google::protobuf::internal::TSanWrite(&_impl_);
+  if (value != nullptr) {
+    SetHasBit(_impl_._has_bits_[0], 0x00000001U);
+  } else {
+    ClearHasBit(_impl_._has_bits_[0], 0x00000001U);
+  }
+  _impl_.data_.SetAllocated(value, GetArena());
+  if (::google::protobuf::internal::DebugHardenForceCopyDefaultString() && _impl_.data_.IsDefault()) {
+    _impl_.data_.Set("", GetArena());
+  }
+  // @@protoc_insertion_point(field_set_allocated:MyNetwork.Request.data)
+}
+
+// -------------------------------------------------------------------
+
+// SendMessageRequest
+
+// string wxid = 1;
+inline void SendMessageRequest::clear_wxid() {
+  ::google::protobuf::internal::TSanWrite(&_impl_);
+  _impl_.wxid_.ClearToEmpty();
+  ClearHasBit(_impl_._has_bits_[0],
+                  0x00000001U);
+}
+inline const ::std::string& SendMessageRequest::wxid() const
+    ABSL_ATTRIBUTE_LIFETIME_BOUND {
+  // @@protoc_insertion_point(field_get:MyNetwork.SendMessageRequest.wxid)
+  return _internal_wxid();
+}
+template <typename Arg_, typename... Args_>
+PROTOBUF_ALWAYS_INLINE void SendMessageRequest::set_wxid(Arg_&& arg, Args_... args) {
+  ::google::protobuf::internal::TSanWrite(&_impl_);
+  SetHasBit(_impl_._has_bits_[0], 0x00000001U);
+  _impl_.wxid_.Set(static_cast<Arg_&&>(arg), args..., GetArena());
+  // @@protoc_insertion_point(field_set:MyNetwork.SendMessageRequest.wxid)
+}
+inline ::std::string* PROTOBUF_NONNULL SendMessageRequest::mutable_wxid()
+    ABSL_ATTRIBUTE_LIFETIME_BOUND {
+  SetHasBit(_impl_._has_bits_[0], 0x00000001U);
+  ::std::string* _s = _internal_mutable_wxid();
+  // @@protoc_insertion_point(field_mutable:MyNetwork.SendMessageRequest.wxid)
+  return _s;
+}
+inline const ::std::string& SendMessageRequest::_internal_wxid() const {
+  ::google::protobuf::internal::TSanRead(&_impl_);
+  return _impl_.wxid_.Get();
+}
+inline void SendMessageRequest::_internal_set_wxid(const ::std::string& value) {
+  ::google::protobuf::internal::TSanWrite(&_impl_);
+  _impl_.wxid_.Set(value, GetArena());
+}
+inline ::std::string* PROTOBUF_NONNULL SendMessageRequest::_internal_mutable_wxid() {
+  ::google::protobuf::internal::TSanWrite(&_impl_);
+  return _impl_.wxid_.Mutable( GetArena());
+}
+inline ::std::string* PROTOBUF_NULLABLE SendMessageRequest::release_wxid() {
+  ::google::protobuf::internal::TSanWrite(&_impl_);
+  // @@protoc_insertion_point(field_release:MyNetwork.SendMessageRequest.wxid)
+  if (!CheckHasBit(_impl_._has_bits_[0], 0x00000001U)) {
+    return nullptr;
+  }
+  ClearHasBit(_impl_._has_bits_[0], 0x00000001U);
+  auto* released = _impl_.wxid_.Release();
+  if (::google::protobuf::internal::DebugHardenForceCopyDefaultString()) {
+    _impl_.wxid_.Set("", GetArena());
+  }
+  return released;
+}
+inline void SendMessageRequest::set_allocated_wxid(::std::string* PROTOBUF_NULLABLE value) {
+  ::google::protobuf::internal::TSanWrite(&_impl_);
+  if (value != nullptr) {
+    SetHasBit(_impl_._has_bits_[0], 0x00000001U);
+  } else {
+    ClearHasBit(_impl_._has_bits_[0], 0x00000001U);
+  }
+  _impl_.wxid_.SetAllocated(value, GetArena());
+  if (::google::protobuf::internal::DebugHardenForceCopyDefaultString() && _impl_.wxid_.IsDefault()) {
+    _impl_.wxid_.Set("", GetArena());
+  }
+  // @@protoc_insertion_point(field_set_allocated:MyNetwork.SendMessageRequest.wxid)
+}
+
+// string content = 2;
+inline void SendMessageRequest::clear_content() {
+  ::google::protobuf::internal::TSanWrite(&_impl_);
+  _impl_.content_.ClearToEmpty();
+  ClearHasBit(_impl_._has_bits_[0],
+                  0x00000002U);
+}
+inline const ::std::string& SendMessageRequest::content() const
+    ABSL_ATTRIBUTE_LIFETIME_BOUND {
+  // @@protoc_insertion_point(field_get:MyNetwork.SendMessageRequest.content)
+  return _internal_content();
+}
+template <typename Arg_, typename... Args_>
+PROTOBUF_ALWAYS_INLINE void SendMessageRequest::set_content(Arg_&& arg, Args_... args) {
+  ::google::protobuf::internal::TSanWrite(&_impl_);
+  SetHasBit(_impl_._has_bits_[0], 0x00000002U);
+  _impl_.content_.Set(static_cast<Arg_&&>(arg), args..., GetArena());
+  // @@protoc_insertion_point(field_set:MyNetwork.SendMessageRequest.content)
+}
+inline ::std::string* PROTOBUF_NONNULL SendMessageRequest::mutable_content()
+    ABSL_ATTRIBUTE_LIFETIME_BOUND {
+  SetHasBit(_impl_._has_bits_[0], 0x00000002U);
+  ::std::string* _s = _internal_mutable_content();
+  // @@protoc_insertion_point(field_mutable:MyNetwork.SendMessageRequest.content)
+  return _s;
+}
+inline const ::std::string& SendMessageRequest::_internal_content() const {
+  ::google::protobuf::internal::TSanRead(&_impl_);
+  return _impl_.content_.Get();
+}
+inline void SendMessageRequest::_internal_set_content(const ::std::string& value) {
+  ::google::protobuf::internal::TSanWrite(&_impl_);
+  _impl_.content_.Set(value, GetArena());
+}
+inline ::std::string* PROTOBUF_NONNULL SendMessageRequest::_internal_mutable_content() {
+  ::google::protobuf::internal::TSanWrite(&_impl_);
+  return _impl_.content_.Mutable( GetArena());
+}
+inline ::std::string* PROTOBUF_NULLABLE SendMessageRequest::release_content() {
+  ::google::protobuf::internal::TSanWrite(&_impl_);
+  // @@protoc_insertion_point(field_release:MyNetwork.SendMessageRequest.content)
+  if (!CheckHasBit(_impl_._has_bits_[0], 0x00000002U)) {
+    return nullptr;
+  }
+  ClearHasBit(_impl_._has_bits_[0], 0x00000002U);
+  auto* released = _impl_.content_.Release();
+  if (::google::protobuf::internal::DebugHardenForceCopyDefaultString()) {
+    _impl_.content_.Set("", GetArena());
+  }
+  return released;
+}
+inline void SendMessageRequest::set_allocated_content(::std::string* PROTOBUF_NULLABLE value) {
+  ::google::protobuf::internal::TSanWrite(&_impl_);
+  if (value != nullptr) {
+    SetHasBit(_impl_._has_bits_[0], 0x00000002U);
+  } else {
+    ClearHasBit(_impl_._has_bits_[0], 0x00000002U);
+  }
+  _impl_.content_.SetAllocated(value, GetArena());
+  if (::google::protobuf::internal::DebugHardenForceCopyDefaultString() && _impl_.content_.IsDefault()) {
+    _impl_.content_.Set("", GetArena());
+  }
+  // @@protoc_insertion_point(field_set_allocated:MyNetwork.SendMessageRequest.content)
+}
+
+// .MyNetwork.SendMsgType msg_type = 3;
+inline void SendMessageRequest::clear_msg_type() {
+  ::google::protobuf::internal::TSanWrite(&_impl_);
+  _impl_.msg_type_ = 0;
+  ClearHasBit(_impl_._has_bits_[0],
+                  0x00000004U);
+}
+inline ::MyNetwork::SendMsgType SendMessageRequest::msg_type() const {
+  // @@protoc_insertion_point(field_get:MyNetwork.SendMessageRequest.msg_type)
+  return _internal_msg_type();
+}
+inline void SendMessageRequest::set_msg_type(::MyNetwork::SendMsgType value) {
+  _internal_set_msg_type(value);
+  SetHasBit(_impl_._has_bits_[0], 0x00000004U);
+  // @@protoc_insertion_point(field_set:MyNetwork.SendMessageRequest.msg_type)
+}
+inline ::MyNetwork::SendMsgType SendMessageRequest::_internal_msg_type() const {
+  ::google::protobuf::internal::TSanRead(&_impl_);
+  return static_cast<::MyNetwork::SendMsgType>(_impl_.msg_type_);
+}
+inline void SendMessageRequest::_internal_set_msg_type(::MyNetwork::SendMsgType value) {
+  ::google::protobuf::internal::TSanWrite(&_impl_);
+  _impl_.msg_type_ = value;
+}
+
 #ifdef __GNUC__
 #pragma GCC diagnostic pop
 #endif  // __GNUC__
@@ -481,6 +1250,12 @@ struct is_proto_enum<::MyNetwork::MsgType> : std::true_type {};
 template <>
 inline const EnumDescriptor* PROTOBUF_NONNULL GetEnumDescriptor<::MyNetwork::MsgType>() {
   return ::MyNetwork::MsgType_descriptor();
+}
+template <>
+struct is_proto_enum<::MyNetwork::SendMsgType> : std::true_type {};
+template <>
+inline const EnumDescriptor* PROTOBUF_NONNULL GetEnumDescriptor<::MyNetwork::SendMsgType>() {
+  return ::MyNetwork::SendMsgType_descriptor();
 }
 
 }  // namespace protobuf

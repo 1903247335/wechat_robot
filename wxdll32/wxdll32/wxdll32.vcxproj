@@ -164,13 +164,16 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClInclude Include="call_sendMessage.h" />
     <ClInclude Include="client.h" />
+    <ClInclude Include="event_consumer.h" />
     <ClInclude Include="event_queue.h" />
     <ClInclude Include="framework.h" />
     <ClInclude Include="hook_head.h" />
     <ClInclude Include="hook_log.h" />
     <ClInclude Include="hook_mutex.h" />
     <ClInclude Include="hook_qrcode.h" />
+    <ClInclude Include="hook_receiveMessage.h" />
     <ClInclude Include="login_flow.h" />
     <ClInclude Include="log_queue.h" />
     <ClInclude Include="log_consumer.h" />
@@ -182,16 +185,19 @@
     <ClInclude Include="trampoline.h" />
     <ClInclude Include="pch.h" />
     <ClInclude Include="public.h" />
-    <ClInclude Include="wechar_offsets.h" />
+    <ClInclude Include="wechat_offsets.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="call_sendMessage.cpp" />
     <ClCompile Include="client.cpp" />
     <ClCompile Include="dllmain.cpp" />
+    <ClCompile Include="event_consumer.cpp" />
     <ClCompile Include="event_queue.cpp" />
     <ClCompile Include="hook_head.cpp" />
     <ClCompile Include="hook_log.cpp" />
     <ClCompile Include="hook_mutex.cpp" />
     <ClCompile Include="hook_qrcode.cpp" />
+    <ClCompile Include="hook_receiveMessage.cpp" />
     <ClCompile Include="login_flow.cpp" />
     <ClCompile Include="log_queue.cpp" />
     <ClCompile Include="log_consumer.cpp" />
@@ -224,6 +230,7 @@
     </MASM>
     <MASM Include="head_hook.asm" />
     <MASM Include="qrcode_hook.asm" />
+    <MASM Include="receiveMessage_hook.asm" />
     <MASM Include="wechatlog_hook.asm" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />

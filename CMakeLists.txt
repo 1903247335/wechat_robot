@@ -48,16 +48,18 @@ qt_add_qml_module(appwx
     SOURCES modules/searcher.h modules/searcher.cpp
     SOURCES modules/injector.h modules/injector.cpp
     SOURCES modules/starter.h modules/starter.cpp
-    SOURCES global.h
+    SOURCES global.h global.cpp
     SOURCES tools/tools.h tools/tools.cpp
     SOURCES logging.h
     SOURCES logging.cpp
+    SOURCES manager/wechatmanager.h manager/wechatmanager.cpp
+    SOURCES global.cpp
 )
 
 if(WX_WITH_PROTOBUF)
     #给我复制proto的 不用管
-    set(DEST_DIR "E:/c/wxdll32/wxdll32")
-    file(TO_NATIVE_PATH "E:/c/wxdll32/wxdll32" NATIVE_DEST)
+
+    file(TO_NATIVE_PATH "E:/c++/wx/wxdll32/wxdll32" NATIVE_DEST)
 
     add_custom_target(copy_proto_files ALL
         COMMAND ${CMAKE_COMMAND} -E make_directory "${NATIVE_DEST}"

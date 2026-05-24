@@ -6,7 +6,7 @@ PUBLIC g_LogBack
 .DATA
 ALIGN 8
 g_LogBack DQ 0
-
+g_Count DQ 0
 .CODE
 WeChatLogHook_Asm  proc
 	push rbp
@@ -36,12 +36,13 @@ WeChatLogHook_Asm  proc
 	; shadow(0x20) + 第5参数槽(0x8)，call 前 RSP 16 字节对齐
 	sub rsp, 30h
 
-	mov rcx, rbx                ; hookRsp
-	mov rdx, r15                ; level
-	mov r8, r14                 ; file
-	mov r9, r13                 ; line
-	mov [rsp + 20h], r12        ; func
+	mov rcx, [rbx+30h]               ;fmt
+	mov rdx, [g_Count]                
+	mov r8,r12
 	call HandleLogHook
+	mov rax,[g_Count] 
+	inc rax
+	mov [g_Count],rax
 
 	add rsp, 30h
 

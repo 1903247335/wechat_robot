@@ -5,10 +5,12 @@ class LogConsumer
 {
 
 	LogQueue* g_queue;
+	std::atomic<bool>g_running;
 	std::thread g_thread;
 public:
 
 	LogConsumer(LogQueue* queue);
-		void Consume();
+	~LogConsumer();
+	void Consume();
 };
 

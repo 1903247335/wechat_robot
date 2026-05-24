@@ -10,6 +10,10 @@
 #include"log_queue.h"
 #include"log_consumer.h"
 #include"log_productor.h"
+
+#include"event_queue.h"
+#include"event_consumer.h"
+
 void OpenConsole() {
     AllocConsole();
     FILE* fp;
@@ -42,25 +46,46 @@ void StartHook() {
 
 }
 
+static LogQueue* g_LogQueue = nullptr;
+
 void InitLogFactory() {
-	LogQueue*logQueue=new LogQueue();
-	g_LogProducer = new LogProductor(logQueue);
-	g_LogConsumer = new LogConsumer(logQueue);
+	g_LogQueue = new LogQueue();
+	g_LogProducer = new LogProductor(g_LogQueue);
+	g_LogConsumer = new LogConsumer(g_LogQueue);
+}
+
+void ShutdownLogFactory() {
+	delete g_LogConsumer;
+	g_LogConsumer = nullptr;
+	delete g_LogProducer;
+	g_LogProducer = nullptr;
+	delete g_LogQueue;
+	g_LogQueue = nullptr;
+}
+void InitClient() {
+    g_Client = new Client();
+    g_Client->Connect();
+}
+
+void InitEventFactory() {
+    g_EventQueue = new EventQueue();
+    g_EventConsumer = new EventConsumer();
 
 }
+
 DWORD WINAPI ThreadProc(LPVOID lpParameter) {
 
   
 
     OpenConsole();
  
+    InitEventFactory();
+    InitLogFactory();
 
     InitClient();
-    InitQueue();
-    InitLogFactory();  // 修复 LogConsumer 线程与队列生命周期后可安全启用
+
 
     StartHook();
-
 
 
     return 0;
@@ -73,11 +98,13 @@ BOOL APIENTRY DllMain( HMODULE hModule,
     switch (ul_reason_for_call)
     {
     case DLL_PROCESS_ATTACH:
-
         CreateThread(NULL, 0, ThreadProc, NULL, 0, NULL);
+        break;
     case DLL_THREAD_ATTACH:
     case DLL_THREAD_DETACH:
+        break;
     case DLL_PROCESS_DETACH:
+        ShutdownLogFactory();
         break;
     }
     return TRUE;

@@ -1,6 +1,9 @@
 #include"pch.h"
-#include"client.h"
 #include"public.h"
+#include"client.h"
+#include"event_queue.h"
+#include"message.pb.h"
+
 #include <winsock2.h>
 #include<ws2tcpip.h>
 #include <string>
@@ -41,6 +44,8 @@ void Client::Connect() {
 		return;
 	}
 	std::cout << "Connected to server!" << std::endl;
+
+	receThread=std::thread(&Client::ReceiveMessage,this);
 }
 
 
@@ -62,4 +67,49 @@ void Client::SendMyMessage(char*message,int size) {
 	else {
 		std::cout << "Sent message: " << message << std::endl;
 	}
+}
+
+void Client::ReceiveMessage()
+{
+	char buffer[RECEIVE_BUFFER_SIZE] = {0};
+	std::vector<char> recvBuffer;
+
+	while (recvThread_isRunning)
+	{
+		int len = recv(clientSocket, buffer, sizeof(buffer) - 1, 0);
+		if (len > 0) {
+			recvBuffer.insert(recvBuffer.end(), buffer, buffer + len);
+
+			//if (buffer[len - 1] == '\n') break;
+			std::memset(buffer, 0, sizeof(buffer));
+		}
+		else if (len == 0) {
+			std::cout << "Connection closed by server." << std::endl;
+		}
+		else {
+			std::cerr << "Receive message fail" << std::endl;
+		}
+		if (!recvBuffer.empty()) {
+			std::string finalMessage(recvBuffer.begin(), recvBuffer.end());
+			std::cout << "Received complete message: " << finalMessage << std::endl;
+			HandleMessage(finalMessage);
+		}
+	}
+
+	
+}
+
+void Client::StopReceiveThread()
+{
+	recvThread_isRunning = false;
+}
+
+void Client::HandleMessage(const std::string& message)
+{
+	MyNetwork::Request request;
+	if (!request.ParseFromString(message)) {
+		std::cerr << "Failed to parse message." << std::endl;
+		return;
+	}
+	EventQueue::CreateNetworkEvent(request.type(), request.data());
 }

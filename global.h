@@ -8,5 +8,9 @@
 #include <QTimer>
 #include<QDebug>
 
+class CppServer;
+extern CppServer*g_cppserver;
+extern  std::list<int>g_idList;
 #endif // GLOBAL_H
+
 

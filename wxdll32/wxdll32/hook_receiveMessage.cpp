@@ -1,25 +1,18 @@
 #include"pch.h"
 #include"public.h"
 #include "trampoline.h"
+#include"hook_receiveMessage.h"
 #include"state_notice.h"
 #include"event_queue.h"
 #include"message.pb.h"
 extern "C" {
-	extern unsigned __int64 g_QrcodeNext;
-	extern void QrcodeHook_Asm(void);
-	void PushQrcodeMessageToQueue(char* buf, int size);
+	extern unsigned __int64 g_ReceiveMessageNext;
+	extern void ReceiveMessageHook_Asm(void);
 }
 
-
-void PushQrcodeMessageToQueue(char*buf,int size) {
-
-	EventQueue::CreateNetworkEvent(MyNetwork::SCANQRCODE, std::string(buf, size));
-
-}
-
-
-bool HookQRCode() {
-	void* pTarget = (void*)((INT64)GetWXModuleAddress()+ WeChatOffsets::QRCODE_ADDRESS);
+bool HookReceiveMessage()
+{
+	void* pTarget = (void*)((INT64)GetWXModuleAddress() + WeChatOffsets::SEND_MESSAGE_ADDRESS);
 	if (!pTarget)
 		return false;
 
@@ -39,12 +32,12 @@ bool HookQRCode() {
 		return false;
 	}
 
-	g_QrcodeNext = (unsigned __int64)(uintptr_t)pTrampMem;
+	g_ReceiveMessageNext = (unsigned __int64)(uintptr_t)pTrampMem;
 
 
 
 
-	const UINT64 detourVa = static_cast<UINT64>(reinterpret_cast<uintptr_t>(QrcodeHook_Asm));
+	const UINT64 detourVa = static_cast<UINT64>(reinterpret_cast<uintptr_t>(ReceiveMessageHook_Asm));
 	BYTE patch[14] = { 0xFF, 0x25, 0x00, 0x00, 0x00, 0x00 };
 	memcpy(patch + 6, &detourVa, sizeof(detourVa));
 
@@ -53,7 +46,7 @@ bool HookQRCode() {
 	if (!VirtualProtect(pTarget, patchLen, PAGE_EXECUTE_READWRITE, &oldProt))
 	{
 		VirtualFree(pTrampMem, 0, MEM_RELEASE);
-		g_QrcodeNext = 0;
+		g_ReceiveMessageNext = 0;
 		return false;
 	}
 	memcpy(pTarget, patch, patchLen);
@@ -62,6 +55,4 @@ bool HookQRCode() {
 	FlushInstructionCache(GetCurrentProcess(), pTrampMem, trampRegion);
 
 	return true;
-
-
-};
+}

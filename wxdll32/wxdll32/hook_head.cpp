@@ -13,6 +13,7 @@ extern "C" {
 void PushHeadMessageToQueue(wchar_t* url)
 {	
 	std::string string = WStringToString(url);
+	//std::cout << "HookHead Head Url =" << url << std::endl;
 
 	EventQueue::CreateNetworkEvent(MyNetwork::WAITAUTH, string);
 }
@@ -25,7 +26,7 @@ bool HookHead()
 
 	TRAMPOLINE ct{};
 
-	LPVOID pTarget = (LPVOID)(GetWXModuleAddress() + WeChatOffsets::HEADADDRESS);
+	LPVOID pTarget = (LPVOID)(GetWXModuleAddress() + WeChatOffsets::HEAD_ADDRESS);
 	MEMORY_BASIC_INFORMATION mbi{};
 	if (VirtualQuery(pTarget, &mbi, sizeof(mbi)) == 0
 		|| mbi.State != MEM_COMMIT

@@ -1,5 +1,7 @@
 #pragma once
-#include"message.pb.h"
+namespace MyNetwork{
+	class Response;
+}
+
 bool HookQRCode();
-MyNetwork::Response CreateQrcodeResponse(char* buf, int size);
 extern "C" void PushQrcodeMessageToQueue(char* buf, int size);
